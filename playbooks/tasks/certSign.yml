@@ -2,6 +2,7 @@
   - name: Clients generating puppet signing requests
     shell: /opt/puppetlabs/bin/puppet agent --test
     when:  sslPath.stat.exists is not defined
+    ignore_errors: true
 
   - name: Capturing outstanding certificate status
     shell: /opt/puppetlabs/bin/puppetserver ca list | grep -i "No certificates to list" | wc -l

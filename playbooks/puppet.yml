@@ -34,14 +34,14 @@
 
   - name: Verify if certificate already generated
     stat:
-       path: /etc/puppetlabs/puppet/ssl/
+       path: /etc/puppetlabs/puppet/ssl/ca/ca_crt.pem
     register: sslPath
     when: masternode|string in ansible_fqdn
 
   - name: Creating CA authority
     shell: /opt/puppetlabs/bin/puppetserver ca setup
-    when: masternode|string in ansible_fqdn
-
+    when: masternode|string in ansible_fqdn and sslPath is not defined
+    ignore_errors: true
 
   - name: Starting puppet server
     service: name=puppetserver state=started enabled=true
