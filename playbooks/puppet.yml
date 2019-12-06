@@ -30,16 +30,18 @@
     when: masternode|string in ansible_fqdn
 
   - name: Deploying basic Puppet Configuration file
-    template: src='files/puppet.conf.j2' dest='/etc/puppetlabs/puppet/puppet.conf' owner=root group=root mode=0644
+    template: src=files/puppet.conf.j2 dest=/etc/puppetlabs/puppet/puppet.conf owner=root group=root mode=0644
 
   - name: Verify if certificate already generated
     stat:
        path: /etc/puppetlabs/puppet/ssl/
     register: sslPath
+    when: masternode|string in ansible_fqdn
 
   - name: Creating CA authority
     shell: /opt/puppetlabs/bin/puppetserver ca setup
-    when: masternode|string in ansible_fqdn and sslPath.stat.exists is not defined
+    when: masternode|string in ansible_fqdn
+
 
   - name: Starting puppet server
     service: name=puppetserver state=started enabled=true
