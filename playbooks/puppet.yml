@@ -1,0 +1,49 @@
+---
+- name: Centralized playbook to deploy and configure Puppet
+  hosts: all
+  become: yes
+  tasks:
+  - name: Include variables
+    include_vars: vars/main.yml
+
+  - name: Install Extra Package Repository
+    yum: name={{ puppetRepo }} state=present
+
+  - name: Inclusing patching tasks
+    include: tasks/reqPackage.yml
+
+  - name: Creating rule in firewall to allow Puppet traffic
+    firewalld:
+       port: 8140/tcp
+       permanent: yes
+       immediate: yes
+       state: enabled
+
+  - name: Fixing memory requirement in order to smooth start of puppet server
+    replace:
+       path: /etc/sysconfig/puppetserver
+       regexp: "{{ item.regexp }}"
+       replace: "{{ item.replace }}"
+    with_items:
+    - { regexp: 'Xms2g', replace: 'Xms512m' }
+    - { regexp: 'Xmx2g', replace: 'Xmx512m' }
+    when: masternode|string in ansible_fqdn
+
+  - name: Deploying basic Puppet Configuration file
+    template: src='files/puppet.conf.j2' dest='/etc/puppetlabs/puppet/puppet.conf' owner=root group=root mode=0644
+
+  - name: Verify if certificate already generated
+    stat:
+       path: /etc/puppetlabs/puppet/ssl/
+    register: sslPath
+
+  - name: Creating CA authority
+    shell: /opt/puppetlabs/bin/puppetserver ca setup
+    when: masternode|string in ansible_fqdn and sslPath.stat.exists is not defined
+
+  - name: Starting puppet server
+    service: name=puppetserver state=started enabled=true
+    when: masternode|string in ansible_fqdn
+
+  - name: Signing Required certificates
+    include: tasks/certSign.yml
