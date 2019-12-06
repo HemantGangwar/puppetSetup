@@ -32,7 +32,7 @@
   - name: Deploying basic Puppet Configuration file
     template: src=files/puppet.conf.j2 dest=/etc/puppetlabs/puppet/puppet.conf owner=root group=root mode=0644
 
-  - name: Verify if certificate already generated
+  - name: Verify if any CA authority present for certificate signing
     stat:
        path: /etc/puppetlabs/puppet/ssl/ca/ca_crt.pem
     register: sslPath
