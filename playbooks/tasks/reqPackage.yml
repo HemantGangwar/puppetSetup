@@ -1,8 +1,8 @@
 ---
   - name: Installing required Puppet Server packages
     yum: name=puppetserver state=present
-    when: masternode|string in ansible_fqdn
+    when: master|string in ansible_fqdn
 
   - name: Installing required Puppet Clients  packages
     yum: name=puppet-agent state=present
-    when: masternode|string not in ansible_fqdn
+    when: master|string not in ansible_fqdn

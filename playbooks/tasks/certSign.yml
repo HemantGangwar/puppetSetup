@@ -7,8 +7,8 @@
   - name: Capturing outstanding certificate status
     shell: /opt/puppetlabs/bin/puppetserver ca list | grep -i "No certificates to list" | wc -l
     register: outstandingCA
-    when: masternode|string in ansible_fqdn
+    when: master|string in ansible_fqdn
 
   - name: Signing certificates
     shell: /opt/puppetlabs/bin/puppetserver ca sign --all
-    when: masternode|string in ansible_fqdn and outstandingCA.stdout != '1'
+    when: master|string in ansible_fqdn and outstandingCA.stdout != '1'

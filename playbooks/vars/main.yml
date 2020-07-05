@@ -1,4 +1,4 @@
 ---
  puppetRepo: https://yum.puppet.com/puppet6-release-el-7.noarch.rpm
- masternode: workstation.lab.example.com
+ master: master.lab.example.com
 
