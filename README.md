@@ -7,22 +7,20 @@ This playbook is intended to install and configure *Puppet 6* on RHEL/CentOS 7 o
 
 Read this document carefully to have more understanding about this ansible playbook.
 
+![image](https://user-images.githubusercontent.com/38517925/86531925-2b357a00-bee3-11ea-8c93-57e9248812ac.png)
 
 ## VARIABLES DECLARATION
 -----------------------
 
-Variables need to declared inside deploy_kubernetes/defaults/main.yml
+Variables need to declared inside playbooks/vars/main.yml
 
-1. KUBERNETES_MASTER => The node fqdn or hostname who will act as Kubernetes Cluster master.
+1. **puppetRepo** => Repository path to download packages, either you can leave it as default or set your custom path.
 
-2. MASTER_IP_ADDRESS => IP address of the above kubernetes master 
-
-3. Other variables declared in deploy_kubernetes/vars/main.yml
+2. **master** => Node name or FQDN which you want to set as your puppet master.
 
 ###### INVENTORY SETUP
 
-One can use it's own inventory or create it's own inventory.
-Replace the hostnames in "inventory" file present here with hostnames of your environment. 
+One can use it's own inventory or create it's own inventory. Replace the hostnames in "inventory" file present here with hostnames of your environment. 
 
 # USAGE
 ------------------------
@@ -32,7 +30,8 @@ Step | Description | Commands
 1 | Download this playbook in your ansible server | # git clone https://github.com/HemantGangwar/puppetSetup.git
 2 | Enter into the directory created | # cd puppetSetup
 3 | Update inventory file provided here with your node names. | # vi inventory
-4 | Update playbooks/vars/main.yml with required parameter | (example) KUBERNETES_MASTER: master.lab.example.com
+4 | Update playbooks/vars/main.yml with required parameter | (example) puppetRepo: https://yum.puppet.com/puppet6-release-el-7.noarch.rpm 
+->  |  | master: master.lab.example.com
 5 | Now execute the playbook | # ansible-playbook playbooks/puppet.yml
 
 
